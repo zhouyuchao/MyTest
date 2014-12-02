@@ -1,0 +1,375 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project
+    name="tvhelper"
+    basedir="."
+    default="deploy" >
+<!-- 
+    <property file="local.properties" />
+ -->
+    <property file="build.properties" />
+
+    <property name="android.framework" value="${sdk.home}/platforms/${sdk.platform}/framework.aidl" />
+    <property name="android.plantforms.dir" value="${sdk.home}/platforms/${sdk.platform}" />
+
+    <!-- android核心jar包 -->
+    <property name="android.core" value="${sdk.home}/platforms/${sdk.platform}/android.jar" />
+    <property name="android.annotation" value="${sdk.home}/tools/support" />
+
+    <!-- 混淆 -->
+    <property name="android.proguard" value="${sdk.home}/tools/proguard/lib/proguard.jar" />
+
+    <!-- 优化apk -->
+    <property name="zipalign" value="${sdk.home}/tools/zipalign.exe" />
+
+    <!-- 将java字节码转换成dalvik字节码 -->
+    <property name="dx" value="${sdk.home}/platform-tools/dx.bat" />
+
+    <!-- 生成未签名的apk -->
+    <property name="apk-builder" value="${sdk.home}/tools/apkbuilder.bat" />
+
+    <!-- 生成R文件 -->
+    <property name="aapt" value="${sdk.home}/platform-tools/aapt.exe" />
+
+    <!-- 把.aidl转成.java -->
+    <property name="aidl" value="${sdk.home}/platform-tools/aidl.exe" />
+
+    <!-- 签名工具 -->
+    <property name="jarsigner" value="${jdk.home}/bin/jarsigner.exe" />
+
+    <!-- 调试工具用于部署应用 -->
+    <property name="adb" value="${sdk.home}/platform-tools/adb.exe" />
+
+    <!-- The absolute path. -->
+    <property name="src.abs" value="${basedir}/src" />
+    <property name="framework_src.abs" value="${basedir}/framework_src" />
+    <property name="lib.abs" value="${basedir}/libs" />
+    <property name="lib.sdk" value="${basedir}/sdk" />
+    <property name="bin.abs" value="${basedir}/bin" />
+    <property name="gen.abs" value="${basedir}/gen" />
+    <property name="res.abs" value="${basedir}/res" />
+    <property name="assets.abs" value="${basedir}/assets" />
+    <property name="androidManifest.abs" value="${basedir}/AndroidManifest.xml" />
+    
+    <property name="dist.abs" value="${basedir}/output" />
+    <property name="dex.abs" value="${basedir}/bin/classes.dex" />
+    <property name="resources.abs" value="${basedir}/bin/resources.ap_" />
+    <property name="unsigned.abs" value="${dist.abs}/${ant.project.name}${channel}-unsigned.apk" />
+    <property name="signed.abs" value="${dist.abs}/${ant.project.name}${channel}-signed.apk" />
+    <property name="keystore.path" location="${basedir}/${keystore.name}" />
+    <property name="platformsigner_dir" value="${basedir}/signapk" />
+    <mkdir dir="${basedir}/output" />
+    <mkdir dir="${bin.abs}" />
+    <mkdir dir="${gen.abs}" />
+
+    <!-- 1.Cleaning the project -->
+    <target name="1clean" >
+        <echo>
+            Cleaning the project...        </echo>
+        <delete
+            includeemptydirs="true"
+            verbose="true" >
+            <fileset
+                dir="${bin.abs}"
+                includes="**/*" >
+            </fileset>
+        </delete>
+
+        <!--
+    <delete
+            includeemptydirs="true"
+            verbose="true" >
+
+            <fileset
+                dir="${gen.abs}"
+                includes="**/*" >
+            </fileset>
+    </delete>
+        -->
+    </target>
+    
+    <!-- 
+    2 Generate R.java
+    Eclipse中会自动生成R.java，ant和命令行使用android SDK提供的aapt.ext程序生成R.java
+     -->
+    <target name="2generate" depends="1clean" >
+        <echo> Generating R.java / Manifest.java from the resources...</echo>
+        <exec executable="${aapt}" failonerror="true" >
+            <arg value="package" />
+            <arg value="-f" />
+            <arg value="-m" />
+            <arg value="-J" />
+            <arg value="${gen.abs}" />
+            <arg value="-M" />
+            <arg value="${androidManifest.abs}" />
+            <arg value="-S" />
+            <arg value="${res.abs}" />
+            <arg value="-I" />
+            <arg value="${android.core}" />
+        </exec>
+    </target>
+
+    <!-- 
+    3Convert and compile AIDL files.
+    Eclipse中自动生成，ant和命令行使用android SDK提供的aidl.exe生成.java文件
+     -->
+    <target name="3aidl" depends="1clean" >
+        <echo> Compiling aidl files into Java classes... </echo>
+        <apply executable="${aidl}" failonerror="true" >
+            <arg value="-p${android.framework}" />
+            <arg value="-I${src.abs}" />
+            <arg value="-o${gen.abs}" />
+            <fileset dir="${src.abs}" >
+                <include name="**/*.aidl" />
+            </fileset>
+        </apply>
+    </target>
+
+    <!--
+     4Compile 编译.java类文件生成class文件
+     srcdir="${framework_src.abs}:${src.abs}:${gen.abs}" 表示编译的源文件目录有三个
+    -->
+    <target name="4compile" depends="1clean,2generate,3aidl" >
+        <echo>Compiles project's .java files into .class files</echo>
+        <javac bootclasspath="${sdk.home}/platforms/${sdk.platform}/android.jar"
+            debug="on"
+            destdir="${bin.abs}"
+            encoding="utf-8"
+            extdirs=""
+            includeantruntime="false"
+            srcdir="${src.abs}:${gen.abs}"
+            target="1.6" >
+            <classpath>
+                <fileset dir="${lib.abs}" includes="*.jar" />
+                <fileset dir="${android.annotation}" includes="*.jar" />
+            </classpath>
+        </javac>
+    </target>
+
+    <target name="optimize" depends="4compile" >
+        <mkdir dir="out/classes" />
+        <echo>optimize classes are put to out/classes.</echo>
+        <java failonerror="true" fork="true" jar="${android.proguard}" >
+            <jvmarg value="-Dmaximum.inlined.code.length=32" />
+            <arg value="-injars ${bin.abs}" />
+            <arg value="-outjars out/classes" />
+            <arg value="-libraryjars ${android.core}" />
+            <arg value="-libraryjars ${lib.abs}" />
+            
+            <arg value="-keep public class * extends android.preference.Preference" />
+            <arg value="-keep public class * extends android.app.backup.BackupAgentHelper" />
+            <arg value="-keep public class * extends android.app.Activity" />
+            <arg value="-keep public class * extends android.app.Service" />
+            <arg value="-keep public class * extends android.content.BroadcastReceiver" />
+            <arg value="-keep public class * extends android.content.ContentProvider" />
+            <arg value="-keep public class * extends android.app.Application" />
+            <arg value="-keep public class * extends android.support.v4.view.ViewPager" />
+            <arg value="-keep public class * extends android.view.View" />
+            <arg value="-keep public class * extends android.view.View {
+                public  &lt;init> (android.content.Context);
+                public  &lt;init> (android.content.Context, android.util.AttributeSet);
+                public  &lt;init> (android.content.Context, android.util.AttributeSet, int);
+                public void set*(...);    
+            }" />
+            
+            <arg value="-keep class **.R$* { *;}" />
+            <arg value="-keep class javax.jmdns.** { *; }" />
+            <arg value="-keep class android.support.v4.** { *; }" />
+            <arg value="-keep class * implements android.os.Parcelable {  
+                public static final android.os.Parcelable$Creator *;  
+            } " />
+            
+            <arg value="-keepclassmembers enum * {  
+                public static **[] values();  
+                public static ** valueOf(java.lang.String);  
+            } " />
+            <arg value="-keepclassmembers class **.R$* {
+              public static &lt;fields>;
+            } " />
+            <arg value="-keepclassmembers class * implements java.io.Serializable {
+                static final long serialVersionUID;
+                private static final java.io.ObjectStreamField[] serialPersistentFields;
+                private void writeObject(java.io.ObjectOutputStream);
+                private void readObject(java.io.ObjectInputStream);
+                java.lang.Object writeReplace();
+                java.lang.Object readResolve();
+            }" />
+            
+            <arg value="-keepclasseswithmembernames class * {  native  &lt;methods>;  } " />
+            
+            <arg value="-dontwarn android.app.Activity" />
+            <arg value="-dontwarn android.support.v4.**" />
+            <arg value="-dontwarn android.annotation.SuppressLint" />
+            <arg value="-dontpreverify" />
+            <arg value="-dontskipnonpubliclibraryclassmembers" />
+            <arg value="-optimizationpasses 5" />
+            <arg value="-dontusemixedcaseclassnames" />
+            <arg value="-dontskipnonpubliclibraryclasses" />
+            <arg value="-allowaccessmodification" />
+            <arg value="-repackageclasses" />
+            
+            <arg value="-keepattributes Exceptions,InnerClasses,Signature,Deprecated, SourceFile,LineNumberTable,*Annotation*,EnclosingMethod" />
+            <arg value="-dontoptimize" />
+        </java>
+    </target>
+
+    <!-- 5Convert and compress .class files to .dex file. -->
+    <target name="5dex" depends="4compile,optimize" >
+        <echo> Converting compiled files and external libraries into dex format file... </echo>
+        <apply executable="${dx}" failonerror="true" parallel="true" >
+            <arg value="--dex" />
+            <arg value="--output=${dex.abs}" />
+            <arg path="out/classes" />
+            <fileset dir="${lib.abs}" includes="*.jar" >
+            </fileset>
+        </apply>
+    </target>
+
+    <!-- 6Package the resources. -->
+    <target name="6package" >
+        <echo> Packaging resources and assets... </echo>
+        <exec executable="${aapt}" failonerror="true" >
+            <arg value="package" />
+            <arg value="-f" />
+            <arg value="-M" />
+            <arg value="${androidManifest.abs}" />
+            <arg value="-S" />
+            <arg value="${res.abs}" />
+            <arg value="-A" />
+            <arg value="${assets.abs}" />
+            <arg value="-I" />
+            <arg value="${android.core}" />
+            <arg value="-F" />
+            <arg value="${resources.abs}" />
+        </exec>
+    </target>
+    
+    <!-- 7Package an unsigned APK file. -->
+    <target name="7genUnsignedApk" depends="5dex, 6package" >
+        <echo> Packaging an unsigned APK file... </echo>
+        <exec executable="${apk-builder}" failonerror="true" >
+            <arg value="${unsigned.abs}" />
+            <arg value="-u" />
+            <arg value="-z" />
+            <arg value="${resources.abs}" />
+            <arg value="-f" />
+            <arg value="${dex.abs}" />
+            <arg value="-rf" />
+            <arg value="${src.abs}" />
+            <!-- 加jar库到应用包中 -->
+            <arg value="-rj" />
+            <arg value="${lib.abs}" />
+            <!-- 加动态连接库到应用包中 -->
+            <arg value="-nf" />
+            <arg value="${lib.abs}" />
+        </exec>
+        <echo> It will need to be signed with jarsigner before being published. </echo>
+    </target>
+
+    <!-- 8Sign the APK. -->
+    <target name="8genSignedApk" depends="7genUnsignedApk" >
+        <exec executable="${jarsigner}" failonerror="true" >
+            <arg value="-verbose" />
+            <arg value="-storepass" />
+            <arg value="${keystore.password}" />
+            <arg value="-keystore" />
+            <arg value="${keystore.path}" />
+            <arg value="-signedjar" />
+            <arg value="${signed.abs}" />
+            <arg value="${unsigned.abs}" />
+            <arg value="${keystore.alias}" />
+        </exec>
+    </target>
+
+    <!-- 9Zipalign -->
+    <target name="9zipalign" depends="8genSignedApk" >
+        <echo>Zipalign for release...</echo>  
+        <tstamp>
+            <format
+                pattern="yyyy-MM-dd-HH-mm-ss"
+                property="time" >
+            </format>
+        </tstamp>
+        <exec executable="${zipalign}" failonerror="true" >
+            <arg value="-v" />
+            <arg value="-f" />
+            <arg value="4" />
+            <arg value="${signed.abs}" />
+            <arg value="${dist.abs}/${ant.project.name}${channel}.apk" />
+        </exec>
+    </target>
+
+    <target name="10ReleaseUpdate" depends="9zipalign" >
+        <java fork="true" jar="${basedir}/upgradeGeneral.jar" >
+            <arg value="${dist.abs}/${ant.project.name}${channel}.apk" />
+            <arg value="${ant.project.name}${channel}" />
+            <arg value="f1" />
+            <arg value="${isforceUpdate}" />
+            <arg value="${basedir}/${releaseNoteFile}" />
+            <arg value="${isServerCheckIMei}" />
+            <arg value="${smartUpgradeVersion}" />
+            <arg value="${basedir}/${diffToolPath}" />
+            <arg value="${basedir}/${oldApkPath}" />
+        </java>
+
+        <move todir="${dist.abs}/update" >
+            <fileset dir="${basedir}/update" />
+        </move>
+
+        <copy todir="${dist.abs}/" >
+            <fileset file="${basedir}/${releaseNoteFile}" />
+        </copy>
+
+        <delete file="${dist.abs}/${ant.project.name}${channel}-unsigned.apk" />
+        <delete file="${dist.abs}/${ant.project.name}${channel}-signed.apk" />
+        <delete file="${dist.abs}/${ant.project.name}${channel}.apk" />
+    </target>
+
+    
+    <!-- 多渠道号打包,支持循环执行 -->
+    <taskdef resource="net/sf/antcontrib/antcontrib.properties" >
+        <classpath>
+            <pathelement location="./ant-contrib-1.0b3.jar" />
+        </classpath>
+    </taskdef>
+
+    <target name="deploy" >
+        <delete includeemptydirs="true" verbose="true" >
+            <fileset dir="${dist.abs}" includes="**/*" />
+        </delete>
+        <foreach delimiter=","
+            list="${market_channels}"
+            param="channel"
+            target="edit_and_build" >
+        </foreach>
+    </target>
+
+    <target name="edit_and_build" >
+        <echo>Run '${channel}' apk</echo>
+        
+        <!--
+        flags="g" 指定全局替换，替换所有符合规则的字段
+        byline="false" 确认被替换的时候是一次替换一行还是多行 
+        pattern 属性用来指明正则表达式
+        -->
+        
+        <!-- 修改渠道号 -->
+        <replaceregexp byline="false" >
+            <regexp pattern="channelNum=(.*)" />
+            <!-- substitution expression 中是替换的值，替换的值都定义在相对应的配置文件中 -->
+            <substitution expression="channelNum=${channel}" />
+            <!-- fileset 属性中的 dir 用来指定被替换文件所在的目录.includes 用来指定要替换哪个文件。 -->
+            <fileset dir="./assets" includes="channel.properties" />
+        </replaceregexp>
+        
+        <!-- 修改版本标识 -->
+        <replaceregexp byline="false" >
+            <regexp pattern="release=(.*)" />
+            <!-- substitution expression 中是替换的值，替换的值都定义在相对应的配置文件中 -->
+            <substitution expression="release=publish" />
+            <!-- fileset 属性中的 dir 用来指定被替换文件所在的目录.includes 用来指定要替换哪个文件 -->
+            <fileset dir="./assets" includes="release.properties" />
+        </replaceregexp>
+
+        <antcall target="10ReleaseUpdate" />
+    </target>
+</project>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">MyTest</string>
+
+    <!-- joystick -->
+    <string name="joystick_start">Start</string>
+    <string name="joystick_select">Select</string>
+
+    <!-- menu -->
+    <string name="menu_device_title">设备连接</string>
+    <string name="menu_settings">功能设置</string>
+    <string name="menu_version_update">版本更新</string>
+    <string name="menu_about">关于</string>
+    <string name="menu_device_no_connect">未连接</string>
+    <string name="drawer_open">打开左侧栏</string>
+    <string name="drawer_close">关闭左侧栏</string>
+    
+    <!-- device search -->
+    <string name="device_search">搜寻</string>
+    <string name="device_searching">搜寻中</string>
+    <string name="device_current_wifi">当前wifi：</string>
+    <string name="device_no_wifi_tips">检测到手机wifi没有打开，请先打开wifi再操作&#8230;</string>
+    <string name="device_discon_wifi_tips">当前手机没有连接wifi，请先连接wifi再操作&#8230;</string>
+    <string name="device_scan_no_ret">暂未搜索到设备，请确保TV/盒子处在同一网络中</string>
+    
+    <!-- settings -->
+    <string name="settings_vibrate_title">按键震动反馈</string>
+    <string name="settings_sound_title">按键声音反馈</string>
+    
+    <!-- version -->
+    <string name="version_new">最新版本：</string>
+    <string name="version_size">版本大小：</string>
+    <string name="version_changed">版本优化：</string>
+    <string name="version_update">立即更新</string>
+    
+    <!-- about -->
+    <string name="about_app_name">椰子电视助手</string>
+    <string name="about_app_right">Copyright © 1994&#8211;2014 Coship Electronics Co., Ltd. All Rights reserved</string>
+    
+    <!-- upgrade -->
+    <string name="upgrade_description">电视助手升级</string>
+    <string name="notice_title">软件更新</string>
+    <string name="notice_find_new_ver">发现新版本：%1$s，是否下载？</string>
+    <string name="notice_allready_new_ver">已经是最新版本了！</string>
+    <string name="notice_isdownload">后台已经在下载！</string>
+    <string name="notice_no_sdcard">服务器有最新版本，但没有检测到SDCard，无法升级！</string>
+    <string name="choice_comfirm">下载</string>
+    <string name="choice_cancle">以后再说</string>
+    <string name="button_ok">确定</string>
+    <string name="cancle">取消</string>
+    <string name="upgrade_error">应用更新失败！</string>
+    <string name="upgrade_apk_invalidate">更新安装包被篡改，安装失败！</string>
+    <string name="notice_update">检查更新中…</string>
+    <string name="check_upgrade_fail">网络不给力，请稍后检查更新！</string>
+    <string name="notice_has_download">已经下载新版本安装包：%1$s，是否安装？</string>
+    <string name="choice_confirm_install">安装</string>
+    <string name="notice_isForceUpgradedownload">您目前版本太低，需要升级到最新版本，后台已经在下载！</string>
+    <string name="notice_isForceUpgrade">您目前版本太低，需要升级到最新版本，已经下载好最新的安装包！</string>
+    <string name="notice_upgrade_server_exception">服务器异常，请稍后检查更新！</string>
+    <string name="notice_upgrade_no_enough_cache">服务器有最新版本，但你的SD卡剩余存储空间低于20M，请清理后再检查更新</string>
+    <string name="notice_upgrade_network_unavailable">当前网络不可用，请检查你的网络设置。</string>
+    <string name="notice_upgrade_no_network">无网络连接。请检查你的网络设置。</string>
+    <string name="notice_download_manager_disabled">下载管理器已经被关闭，请到设置>应用管理器>全部，启动下载管理器。</string>
+    
+</resources>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <string-array name="menulist">
+        <item>设备连接</item>
+        <item>功能设置</item>
+        <item>版本更新</item>
+        <item>关于</item>
+    </string-array>
+    
+</resources>

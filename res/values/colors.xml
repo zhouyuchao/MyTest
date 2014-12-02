@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <color name="white">#ffffff</color>
+    
+    <!-- 列表分隔线、标题分隔线 -->
+    <color name="divide">#b7b7b7</color>
+    
+    <!-- 一般字体颜色值 -->
+    <color name="text_color_normal">#343434</color>
+    
+    <!-- 界面背景颜色值 -->
+    <color name="bg_color">#e8e8e8</color>
+    
+</resources>

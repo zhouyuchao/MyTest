@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_color" >
+
+    <include
+        android:id="@+id/version_title_layout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/title_height"
+        layout="@layout/title_layout" />
+
+    <TextView
+        android:id="@+id/version_new"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/version_title_layout"
+        android:layout_marginLeft="@dimen/version_text_margin"
+        android:layout_marginTop="25dp"
+        android:text="@string/version_new"
+        android:textColor="@color/text_color_normal"
+        android:textIsSelectable="false"
+        android:textSize="15sp" />
+
+    <TextView
+        android:id="@+id/version_size"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/version_new"
+        android:layout_marginLeft="@dimen/version_text_margin"
+        android:layout_marginTop="17dp"
+        android:text="@string/version_size"
+        android:textColor="@color/text_color_normal"
+        android:textIsSelectable="false"
+        android:textSize="15sp" />
+
+    <TextView
+        android:id="@+id/version_changed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/version_size"
+        android:layout_marginLeft="@dimen/version_text_margin"
+        android:layout_marginTop="17dp"
+        android:text="@string/version_changed"
+        android:textColor="@color/text_color_normal"
+        android:textIsSelectable="false"
+        android:textSize="15sp" />
+
+    <TextView
+        android:id="@+id/version_changed_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/version_changed"
+        android:layout_marginLeft="@dimen/version_text_margin"
+        android:layout_marginRight="@dimen/version_text_margin"
+        android:layout_marginTop="12dp"
+        android:textColor="@color/text_color_normal"
+        android:textIsSelectable="false"
+        android:textSize="12sp" />
+
+    <Button
+        android:id="@+id/version_update"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="30dp"
+        android:background="@drawable/common_btn_selector"
+        android:text="@string/version_update"
+        android:textColor="#ffffff"
+        android:textIsSelectable="false"
+        android:textSize="20sp" />
+
+</RelativeLayout>

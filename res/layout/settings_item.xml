@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_color" >
+
+    <TextView
+        android:id="@+id/settings_item_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="40dp"
+        android:text="@string/settings_vibrate_title"
+        android:textColor="@color/text_color_normal"
+        android:textIsSelectable="false"
+        android:textSize="19sp" />
+
+    <com.zsuper.mytest.widget.SlipButton
+        android:id="@+id/settings_item_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="40dp" />
+
+    <!--
+    <Switch
+        android:id="@+id/settings_item_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="40dp"
+        android:switchMinWidth="55dp"
+        android:textOff=""
+        android:textOn=""
+        android:thumb="@drawable/settings_switch_btn"
+        android:track="@drawable/settings_switch_selector" />    -->
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/divide" />
+
+</RelativeLayout>

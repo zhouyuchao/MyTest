@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/joystick_bg" >
+    
+    <RelativeLayout
+        android:id="@+id/arr_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="45dp"
+        android:layout_marginLeft="40dp"
+        android:background="@drawable/joystick_direction_bg" >
+
+        <ImageView
+            android:id="@+id/arrBackground"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@drawable/joystick_direction_ball"
+            android:contentDescription="@null" />
+    </RelativeLayout>
+
+    <ImageButton
+        android:id="@+id/btn_device"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="82dp"
+        android:background="@drawable/joystick_bt_dev_con_states"
+        android:contentDescription="@null" />
+
+    <ImageButton
+        android:id="@+id/btn_settings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="25dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/joystick_bt_setting_states"
+        android:contentDescription="@null" />
+
+    <include
+        android:id="@+id/key_group"
+        android:layout_width="195dip"
+        android:layout_height="195dip"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="47dp"
+        android:layout_marginRight="40dp"
+        layout="@layout/joystick_key_group" />
+
+    <include
+        android:id="@+id/start_btn_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="95dp"
+        layout="@layout/joystick_btn_group" />
+
+</RelativeLayout>
